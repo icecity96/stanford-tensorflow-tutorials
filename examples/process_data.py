@@ -12,7 +12,7 @@ import zipfile
 import numpy as np
 from six.moves import urllib
 import tensorflow as tf
-
+import collections
 import utils
 
 # Parameters for downloading data
@@ -98,3 +98,27 @@ def get_index_vocab(vocab_size):
     file_path = download(FILE_NAME, EXPECTED_BYTES)
     words = read_data(file_path)
     return build_vocab(words, vocab_size)
+
+def cbow_generate_sample(index_words, context_window_size):
+    for index, target in enumerate(index_words):
+        context = index_words[max(0, index - context_window_size): index] + index_words[index + 1: index + context_window_size + 1]
+        yield context, target
+
+def cbow_get_batch(iterator, batchsize, skip_window):
+    while True:
+        span = 2 * skip_window + 1
+        context_batch = np.zeros(shape=(batchsize, span - 1), dtype=np.int32)
+        target_batch = np.zeros([batchsize, 1])
+        for index in range(batchsize):
+            context_batch[index], target_batch[index] = next(iterator)
+        yield context_batch, target_batch
+
+def cbow_process_data(vocab_size, batch_size, skip_window):
+    file_path = download(FILE_NAME, EXPECTED_BYTES)
+    words = read_data(file_path)
+    dictionary, _ = build_vocab(words, vocab_size)
+    index_words = convert_words_to_index(words, dictionary)
+    del words  # to save memory
+    single_gen = cbow_generate_sample(index_words, skip_window)
+    return cbow_get_batch(single_gen, batch_size, skip_window)
+

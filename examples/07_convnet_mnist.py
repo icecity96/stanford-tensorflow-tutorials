@@ -24,7 +24,7 @@ N_CLASSES = 10
 
 # Step 1: Read in data
 # using TF Learn's built in function to load MNIST data to the folder data/mnist
-mnist = input_data.read_data_sets("/data/mnist", one_hot=True)
+mnist = input_data.read_data_sets("data/mnist", one_hot=True)
 
 # Step 2: Define paramaters for the model
 LEARNING_RATE = 0.001
@@ -61,7 +61,7 @@ with tf.variable_scope('conv1') as scope:
     conv1 = tf.nn.relu(conv + biases, name=scope.name)
 
     # output is of dimension BATCH_SIZE x 28 x 28 x 32
-    conv1 = layers.conv2d(images, 32, 5, 1, activation_fn=tf.nn.relu, padding='SAME')
+    # conv1 = layers.conv2d(images, 32, 5, 1, activation_fn=tf.nn.relu, padding='SAME')
 
 with tf.variable_scope('pool1') as scope:
     pool1 = tf.nn.max_pool(conv1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1],

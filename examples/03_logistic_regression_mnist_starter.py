@@ -54,7 +54,10 @@ loss = tf.reduce_mean(entropy)
 
 # Step 6: define training op
 # using gradient descent to minimize loss
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(loss)
+# GradientDescentOptimizer
+#optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(loss)
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
+#optimizer = tf.train.AdadeltaOptimizer(learning_rate=learning_rate).minimize(loss)
 
 with tf.Session() as sess:
     writer = tf.summary.FileWriter('./graphs/logistic_reg', sess.graph)
